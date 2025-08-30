@@ -1,0 +1,12 @@
+- Lines 1-5 = ArnoAbout 
+  - Lines 1-5 = Aug-2025
+    - Lessons from 1-6 Aug-2025
+    - 3-Aug-2025 Missing
+- Lines 6-20 = DailyLuc
+  - Lines 6-20 = July-2025
+    - Lessons from 1-16 July-2025
+    - 2-July-2025 Missing
+- Lines 21-30 = Pope Lesson
+  - Lines 21-30 = July-2025
+    - Lessons from 4(2)-10 July-2025
+    - 7-July-2025 (1) Missing
