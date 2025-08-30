@@ -1,0 +1,1 @@
+Summarize the transcript into a clear, structured lesson in my style: concise, neutral, professional tone; remove greetings and filler; group related ideas; preserve all key teachings; use short paragraphs and allow Markdown formatting.
