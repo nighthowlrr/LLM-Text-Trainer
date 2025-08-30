@@ -1,5 +1,4 @@
-def get_model_instructions() -> str:
-    return open("../data/model_instructions.txt", "r").read()
+from code_util.get_instructions import get_model_instructions
 
 def escape_json(text: str) -> str:
     return text.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "")
