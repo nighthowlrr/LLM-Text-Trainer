@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c7b282cf-2488-4744-928f-dcb8c6e4b7a4" name="Changes" comment="Add file_helpers.py">
-      <change beforePath="$PROJECT_DIR$/.idea/LLM-Text-Trainer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LLM-Text-Trainer.iml" afterDir="false" />
+    <list default="true" id="c7b282cf-2488-4744-928f-dcb8c6e4b7a4" name="Changes" comment="Update .gitignore">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code_util/file_helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/code_util/file_helpers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train/train_lora.py" beforeDir="false" afterPath="$PROJECT_DIR$/train/train_lora.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,11 +68,13 @@
     "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
   }
 }]]></component>
-  <component name="RunManager" selected="Python.Train LoRA">
+  <component name="RunManager" selected="Python.Validate JSONL (with defaults)">
     <list>
       <item itemvalue="Python.Train LoRA" />
-      <item itemvalue="Python.Train LoRA (with defaults)" />
+      <item itemvalue="Python.Validate JSONL" />
       <item itemvalue="Python.JSONL Formatter" />
+      <item itemvalue="Python.Validate JSONL (with defaults)" />
+      <item itemvalue="Python.Train LoRA (with defaults)" />
     </list>
     <recent_temporary>
       <list>
@@ -156,7 +154,23 @@
       <option name="project" value="LOCAL" />
       <updated>1756558468124</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Update train_lora.py to take input from user or arguments">
+      <option name="closed" value="true" />
+      <created>1756558628158</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1756558628158</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Update .gitignore">
+      <option name="closed" value="true" />
+      <created>1756558733440</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1756558733440</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -178,6 +192,8 @@
     <MESSAGE value="Add train.jsonl" />
     <MESSAGE value="Add .gitignore" />
     <MESSAGE value="Add file_helpers.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add file_helpers.py" />
+    <MESSAGE value="Update train_lora.py to take input from user or arguments" />
+    <MESSAGE value="Update .gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update .gitignore" />
   </component>
 </project>
