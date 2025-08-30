@@ -1,24 +1,38 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer, DataCollatorForLanguageModeling
 from datasets import load_dataset
 from peft import LoraConfig, get_peft_model
+import torch
+import argparse
 
+from code_util.file_helpers import pick_folder, pick_file
 from code_util.get_instructions import get_model_instructions
-
-MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct" # TODO: Get model name from user
-model_name_split = MODEL_NAME.split("/")
-OUTPUT_DIR = f"../output/lora/{model_name_split[0]}/{model_name_split[1]}"
-TRAIN_FILE = "../data/summary_data.jsonl" # TODO: Get training data file from user
 
 def main():
     print("=== Train LoRA ===")
 
+    parser = argparse.ArgumentParser(description="Train LoRA")
+    parser.add_argument("--model-name", type=str, required=False, help="HuggingFace ID of model")
+    parser.add_argument("--train-file", type=str, required=False, help="Location of training data file")
+    parser.add_argument("--output-dir", type=str, required=False, help="Where to save the LoRA adapter")
+    args = parser.parse_args()
+
+    model_name = args.model_name or input("Enter HuggingFace ID of model (e.g. Qwen/Qwen2.5-1.5B-Instruct): ")
+    train_file = args.train_file or pick_file("Select training data file...", True,
+                                              [("JSONL Files", "*.jsonl")])
+    given_output_dir = args.output_dir or pick_folder("Select output directory...")
+    output_dir = given_output_dir + f"/{model_name.split("/")[0]}/{model_name.split("/")[1]}"
+
+    print("Model name:", model_name)
+    print("Training file:", train_file)
+    print("Output directory:", output_dir)
+
     print("1/7: Loading dataset...")
-    training_dataset = load_dataset("json", data_files=TRAIN_FILE, split="train")
+    training_dataset = load_dataset("json", data_files=train_file, split="train")
     print(f"Dataset loaded with {len(training_dataset)} samples")
 
     print("2/7: Loading tokenizer and base model...")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    model = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name)
 
     print("3/7: Applying LoRA configuration...")
     lora_config = LoraConfig(
@@ -43,7 +57,7 @@ def main():
 
     print("5/7: Setting up training arguments...")
     training_args = TrainingArguments(
-        output_dir=OUTPUT_DIR,
+        output_dir=output_dir,
         per_device_train_batch_size=2,
         gradient_accumulation_steps=4,
         num_train_epochs=3,
@@ -61,19 +75,28 @@ def main():
         mlm=False
     )
 
+    # Detect if MPS backend is available for pin_memory setting
+    if torch.backends.mps.is_available():
+        pin_memory = False
+        print("Detected MPS backend - disabling pin_memory to avoid warnings.") # TODO: Remove this log in end version
+    else:
+        pin_memory = True
+
     trainer = Trainer(
         model=peft_model,
         args=training_args,
         train_dataset=tokenized_dataset,
         data_collator=data_collator
     )
+    trainer.args.dataloader_pin_memory = pin_memory;
+
     trainer.train()
 
     print("7/7: Saving model and tokenizer...")
-    peft_model.save_pretrained(OUTPUT_DIR)
-    tokenizer.save_pretrained(OUTPUT_DIR)
+    peft_model.save_pretrained(output_dir)
+    tokenizer.save_pretrained(output_dir)
 
-    print(f"\nTraining complete! Model + tokenizer saved to: {OUTPUT_DIR}")
+    print(f"\nTraining complete! Model + tokenizer saved to: {output_dir}")
 
 if __name__ == "__main__":
     main()
