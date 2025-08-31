@@ -33,6 +33,7 @@ def main():
         print("Downloading base model from HuggingFace Hub: ", base_model)
     print("Training file:", train_file)
     print("Output directory:", output_dir)
+    print("==================")
 
     print("1/7: Loading dataset...")
     training_dataset = load_dataset("json", data_files=train_file, split="train")
@@ -108,6 +109,7 @@ def main():
     tokenizer.save_pretrained(output_dir)
 
     print(f"\nTraining complete! Model + tokenizer saved to: {output_dir}")
+    print("==================")
 
 if __name__ == "__main__":
     main()
