@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer, DataCollatorForLanguageModeling
 from datasets import load_dataset
 from peft import LoraConfig, get_peft_model
@@ -11,18 +13,24 @@ def main():
     print("=== Train LoRA ===")
 
     parser = argparse.ArgumentParser(description="Train LoRA")
-    parser.add_argument("--model-name", type=str, required=False, help="HuggingFace ID of model")
-    parser.add_argument("--train-file", type=str, required=False, help="Location of training data file")
-    parser.add_argument("--output-dir", type=str, required=False, help="Where to save the LoRA adapter")
+    parser.add_argument("--base_model", type=str, required=False, help="Path to local base model or HuggingFace ID of model")
+    parser.add_argument("--train_file", type=str, required=False, help="Location of training data file")
+    parser.add_argument("--output_dir", type=str, required=False, help="Where to save the LoRA adapter")
     args = parser.parse_args()
 
-    model_name = args.model_name or input("Enter HuggingFace ID of model (e.g. Qwen/Qwen2.5-1.5B-Instruct): ")
+    base_model = (args.base_model or input("Enter local path to base model or HuggingFace ID of model (e.g. Qwen/Qwen2.5-1.5B-Instruct)")
+                  .strip())
+
     train_file = args.train_file or pick_file("Select training data file...", True,
                                               [("JSONL Files", "*.jsonl")])
     given_output_dir = args.output_dir or pick_folder("Select output directory...")
-    output_dir = given_output_dir + f"/{model_name.split("/")[0]}/{model_name.split("/")[1]}"
+    model_name_dir = Path(base_model).name if Path(base_model).exists() else base_model.split("/")[-1]
+    output_dir = given_output_dir + f"/{model_name_dir}"
 
-    print("Model name:", model_name)
+    if Path(base_model).exists():
+        print("Loading base model from local path: ", base_model)
+    else:
+        print("Downloading base model from HuggingFace Hub: ", base_model)
     print("Training file:", train_file)
     print("Output directory:", output_dir)
 
@@ -31,8 +39,8 @@ def main():
     print(f"Dataset loaded with {len(training_dataset)} samples")
 
     print("2/7: Loading tokenizer and base model...")
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(base_model)
+    model = AutoModelForCausalLM.from_pretrained(base_model)
 
     print("3/7: Applying LoRA configuration...")
     lora_config = LoraConfig(
@@ -79,6 +87,9 @@ def main():
     if torch.backends.mps.is_available():
         pin_memory = False
         print("Detected MPS backend - disabling pin_memory to avoid warnings.") # TODO: Remove this log in end version
+        # To avoid warning (with torch 2.8.0):
+        # /LLM-Text-Trainer/.venv/lib/python3.13/site-packages/torch/utils/data/dataloader.py:684: UserWarning:
+        # 'pin_memory' argument is set as true but not supported on MPS now, then device pinned memory won't be used.
     else:
         pin_memory = True
 
